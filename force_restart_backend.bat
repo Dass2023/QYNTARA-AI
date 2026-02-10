@@ -1,0 +1,9 @@
+@echo off
+echo Killing existing Python processes on port 8000...
+for /f "tokens=5" %%a in ('netstat -aon ^| find ":8000" ^| find "LISTENING"') do taskkill /f /pid %%a
+echo Waiting for cleanup...
+timeout /t 2 /nobreak
+echo Starting Qyntara Backend...
+set PYTHONPATH=%CD%
+start "QYNTARA BACKEND" cmd /k "set PYTHONPATH=%CD% && python backend/main.py"
+echo Done.

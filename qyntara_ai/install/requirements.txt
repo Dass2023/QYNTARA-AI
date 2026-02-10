@@ -1,0 +1,11 @@
+PySide2; python_version < '3.11'
+PySide6; python_version >= '3.11'
+trimesh
+torch
+fastapi
+uvicorn
+redis
+requests
+numpy
+open3d
+pytorch3d

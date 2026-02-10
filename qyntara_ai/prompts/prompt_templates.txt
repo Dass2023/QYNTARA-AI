@@ -1,0 +1,14 @@
+[geo_open_edges]
+The object {object_name} has open edges. Write a generic Python script using maya.cmds to select border edges and merge vertices with a low threshold, or fill holes if they are planar.
+
+[geo_non_manifold]
+The object {object_name} contains non-manifold geometry. Suggest a cleanup strategy using `polyCleanup` command.
+
+[geo_lamina_faces]
+The object {object_name} has {count} lamina faces. Provide a script to remove them.
+
+[xform_scale]
+The object {object_name} has scale {scale}. It should be [1, 1, 1]. Write a script to freeze transformations.
+
+[uv_overlap]
+The object {object_name} has overlapping UVs. Suggest a `polyLayoutUV` command strategy.
