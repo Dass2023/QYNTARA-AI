@@ -1,0 +1,6 @@
+'surface_area'
+Traceback (most recent call last):
+  File "I:\QYNTARA AI\backend\generative\uv_unwrapper.py", line 221, in unwrap
+    if metrics['surface_area'] > 1e-6:
+       ~~~~~~~^^^^^^^^^^^^^^^^
+KeyError: 'surface_area'
