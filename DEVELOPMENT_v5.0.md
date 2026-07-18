@@ -45,12 +45,6 @@
 - [ ] Install Stable Diffusion dependencies
 - [ ] Set up model storage (S3 or local)
 
-### Frontend Enhancements
-- [ ] Create Material Library UI (React components)
-- [ ] Build real-time 3D material preview (Three.js)
-- [ ] Implement drag-and-drop texture upload
-- [ ] Add material presets gallery
-
 ### Maya Integration
 - [ ] Create new "AI Materials" tab
 - [ ] Implement material apply workflow
@@ -179,3 +173,4 @@ substance-painter-python>=1.0.0  # If available
 **Last Updated**: February 11, 2026  
 **Owner**: Dass2023  
 **Reviewers**: [To be assigned]
+

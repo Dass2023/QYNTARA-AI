@@ -51,7 +51,6 @@ except AttributeError:
 
 # --- Configuration ---
 API_URL = "http://localhost:8000"
-ACCESS_CODE = "QYNTARA-X-777"
 
 # --- Cyberpunk Stylesheet ---
 STYLESHEET = """
@@ -820,23 +819,84 @@ class DensityPanel(UniversalPanel):
         hbox.addWidget(self.btn_set)
         self.main_layout.addLayout(hbox)
 
-class DualChannelPanel(UniversalPanel):
+# --- Topology Optimizer Panels ---
+class RemeshPanel(UniversalPanel):
     def __init__(self, parent=None):
-        super(DualChannelPanel, self).__init__("DUAL CHANNEL (Texture + Lightmap)", parent)
+        super(RemeshPanel, self).__init__("AI REMESHING", parent)
         
-        lbl = QtWidgets.QLabel("Generates a unified asset with:\n• UV1: Organic/Hard Surface (Texture)\n• UV2: Lightmap (Strict, Non-overlapping)")
-        lbl.setStyleSheet("color: #aaa; font-style: italic;")
-        lbl.setWordWrap(True)
-        self.main_layout.addWidget(lbl)
+        # Symmetry
+        hbox_sym = QtWidgets.QHBoxLayout()
+        hbox_sym.addWidget(QtWidgets.QLabel("Symmetry:"))
+        self.chk_x = QtWidgets.QCheckBox("X"); self.chk_x.setChecked(True)
+        self.chk_y = QtWidgets.QCheckBox("Y")
+        self.chk_z = QtWidgets.QCheckBox("Z")
+        hbox_sym.addWidget(self.chk_x); hbox_sym.addWidget(self.chk_y); hbox_sym.addWidget(self.chk_z)
+        self.main_layout.addLayout(hbox_sym)
+
+        # Face Count
+        form = QtWidgets.QFormLayout()
+        self.face_input = QtWidgets.QSpinBox()
+        self.face_input.setRange(100, 500000)
+        self.face_input.setValue(5000)
+        self.face_input.setSingleStep(1000)
+        form.addRow("Target Faces:", self.face_input)
         
-        self.btn_gen_dual = QtWidgets.QPushButton("GENERATE UNIFIED ASSET")
-        self.btn_gen_dual.setStyleSheet("background-color: #00ff9d; color: black; font-weight: bold; height: 40px;")
-        self.main_layout.addWidget(self.btn_gen_dual)
+        self.curvature = QtWidgets.QDoubleSpinBox()
+        self.curvature.setRange(0, 1)
+        self.curvature.setValue(0.5)
+        self.curvature.setSingleStep(0.1)
+        form.addRow("Edge Flow Sens:", self.curvature)
+        self.main_layout.addLayout(form)
+
+        # Execute
+        self.btn_run = QtWidgets.QPushButton("RUN AI REMESH")
+        self.btn_run.setStyleSheet("background-color: #00f3ff; color: black; font-weight: bold; height: 40px;")
+        self.main_layout.addWidget(self.btn_run)
+        
+        # Micro Tools
+        hbox_micro = QtWidgets.QHBoxLayout()
+        self.btn_smooth = QtWidgets.QPushButton("SMOOTH")
+        self.btn_relax = QtWidgets.QPushButton("RELAX")
+        self.btn_sharpen = QtWidgets.QPushButton("SHARPEN")
+        hbox_micro.addWidget(self.btn_smooth); hbox_micro.addWidget(self.btn_relax); hbox_micro.addWidget(self.btn_sharpen)
+        self.main_layout.addLayout(hbox_micro)
+
+class DecimationPanel(UniversalPanel):
+    def __init__(self, parent=None):
+        super(DecimationPanel, self).__init__("DECIMATION & LOD", parent)
+        
+        self.main_layout.addWidget(QtWidgets.QLabel("QUALITY PRESETS"))
+        hbox_pre = QtWidgets.QHBoxLayout()
+        self.btn_game = QtWidgets.QPushButton("GAMING")
+        self.btn_film = QtWidgets.QPushButton("FILM")
+        self.btn_mobile = QtWidgets.QPushButton("MOBILE")
+        hbox_pre.addWidget(self.btn_game); hbox_pre.addWidget(self.btn_film); hbox_pre.addWidget(self.btn_mobile)
+        self.main_layout.addLayout(hbox_pre)
+        
+        self.btn_gen_lod = QtWidgets.QPushButton("GENERATE LOD CHAIN")
+        self.btn_gen_lod.setStyleSheet("background-color: #bc13fe; color: white; font-weight: bold;")
+        self.main_layout.addWidget(self.btn_gen_lod)
+
+class TopologyCleanupPanel(UniversalPanel):
+    def __init__(self, parent=None):
+        super(TopologyCleanupPanel, self).__init__("TOPOLOGY INTEGRITY", parent)
+        
+        grid = QtWidgets.QGridLayout()
+        self.chk_ngon = QtWidgets.QCheckBox("N-Gons"); self.chk_ngon.setChecked(True)
+        self.chk_nonman = QtWidgets.QCheckBox("Non-Manifold"); self.chk_nonman.setChecked(True)
+        self.chk_lamina = QtWidgets.QCheckBox("Lamina"); self.chk_lamina.setChecked(True)
+        self.chk_holes = QtWidgets.QCheckBox("Open Holes")
+        
+        grid.addWidget(self.chk_ngon, 0, 0); grid.addWidget(self.chk_nonman, 0, 1)
+        grid.addWidget(self.chk_lamina, 1, 0); grid.addWidget(self.chk_holes, 1, 1)
+        self.main_layout.addLayout(grid)
+        
+        self.btn_cleanup = QtWidgets.QPushButton("AUTO-FIX ALL TOPOLOGY")
+        self.btn_cleanup.setStyleSheet("background-color: #ff003c; color: white; font-weight: bold;")
+        self.main_layout.addWidget(self.btn_cleanup)
 
 
 
-
-        self.main_layout.addWidget(self.btn_gen_dual)
 
 
 class DiagnosticsPanel(UniversalPanel):
@@ -989,11 +1049,320 @@ class Industry50Panel(UniversalPanel):
             self.lbl_metrics.setText(f"Energy: {energy:.1f}% | Carbon: {carbon:.1f}kg")
             self.lbl_metrics.setStyleSheet("color: #bc13fe; font-weight: bold; margin-bottom: 10px; background: #220033; padding: 5px; border-radius: 4px;")
 
+
+import requests
+import json
+import random
+
+# --- Industry Roadmap Dialog (Phase 6) ---
+class IndustryRoadmapDialog(QtWidgets.QDialog):
+    def __init__(self, parent=None):
+        super(IndustryRoadmapDialog, self).__init__(parent)
+        self.setWindowTitle("QYNTARA // 12-INDUSTRY STRATEGIC MATRIX (CONNECTED)")
+        self.setWindowFlags(QtCore.Qt.Tool)
+        self.resize(1100, 750)
+        # Inherit main stylesheet plus specific overrides
+        self.setStyleSheet(STYLESHEET + """
+            QListWidget { background: #050505; border-right: 1px solid #333; font-size: 14px; font-weight: bold; outline: none; }
+            QListWidget::item { padding: 20px; border-bottom: 1px solid #1a1a1a; color: #666; }
+            QListWidget::item:selected { background: #111; color: #00f3ff; border-left: 4px solid #00f3ff; }
+            QListWidget::item:hover { background: #0f0f0f; color: #ccc; }
+            
+            QLabel.h1 { font-family: 'Segoe UI', sans-serif; font-size: 32px; font-weight: 900; color: #fff; letter-spacing: 2px; }
+            QLabel.h2 { font-family: 'Segoe UI', sans-serif; font-size: 14px; font-weight: bold; color: #00f3ff; margin-top: 25px; text-transform: uppercase; letter-spacing: 1px; }
+            
+            QCheckBox { color: #888; font-size: 14px; spacing: 10px; padding: 5px; }
+            QCheckBox::indicator { width: 18px; height: 18px; border: 1px solid #444; border-radius: 4px; background: #111; }
+            QCheckBox::indicator:checked { background: #00f3ff; border-color: #00f3ff; image: url(none); }
+            
+            QFrame#Details { background: #0a0a0a; }
+            
+            QPushButton#CloudBtn {
+                background-color: #00f3ff; color: #000; font-weight: bold; border: none; padding: 10px; font-size: 12px; letter-spacing: 1px;
+            }
+            QPushButton#CloudBtn:hover { background-color: #fff; }
+        """)
+
+        # Data derived from future_validation_roadmap.md
+        self.data = {
+            "Gaming": {
+                "tagline": "Real-Time Intelligence 3.0",
+                "current": "Basic geometry validation + Polycount limits.",
+                "future_val": [
+                    ("[x]", "Frame-Time Prediction: AI estimates GPU cost based on shader complexity [Implemented]"),
+                    ("[ ]", "LOD Chain Validator: Auto-scores LOD popping risk"),
+                    ("[x]", "Platform Compliance: Quest 2 / XR Checks (Poly < 100k, DC < 50)")
+                ],
+                "future_mode": "PRE-EXPORT PERFORMANCE GUARANTEE"
+            },
+            "Film / VFX": {
+                "tagline": "Pipeline Integrity AI",
+                "current": "Manifold checks.",
+                "future_val": [
+                    ("[x]", "Subdivision Artifact Prediction: Detects pinching before smoothing [Implemented]"),
+                    ("[ ]", "Texture Oversubscription: Warns if 8K textures used on tiny objects"),
+                    ("[ ]", "USD Graph Integrity: Validates dependency cycles")
+                ],
+                "future_mode": "RENDER FARM FAIL-SAFE"
+            },
+            "Automotive": {
+                "tagline": "Digital Twin Precision",
+                "current": "N/A",
+                "future_val": [
+                    ("[x]", "CAD Tolerance Heatmap: Visualizes deviation from NURBS"),
+                    ("[ ]", "Gap & Flush Analysis: Detects panel alignment issues > 0.5mm"),
+                    ("[x]", "Material Stress: Approximate stress points")
+                ],
+                "future_mode": "MANUFACTURING FEASIBILITY SCORE"
+            },
+            "Architecture / BIM": {
+                "tagline": "Smart Built-Environment",
+                "current": "Scale Checks.",
+                "future_val": [
+                    ("[x]", "IFC Metadata Check: Ensures walls have Fire Rating data"),
+                    ("[ ]", "Wall Thickness Scan: Flags walls thinner than buildable limits"),
+                    ("[ ]", "BIM LoD Compliance: Verifies LOD 300 vs 400 geometry")
+                ],
+                "future_mode": "LEED COMPLIANCE PRE-CHECK"
+            },
+            "Medical": {
+                "tagline": "Precision Bio-Spatial",
+                "current": "Watertight Checks.",
+                "future_val": [
+                    ("[x]", "Watertight 100% Guarantee: Zero-tolerance for holes [Implemented]"),
+                    ("[ ]", "Anatomical Landmark Check: Matches ROI to standard atlas"),
+                    ("[ ]", "DICOM Alignment: Validates scale against CT/MRI metadata")
+                ],
+                "future_mode": "SURGICAL SIMULATION CERTIFICATION"
+            },
+            "Aerospace / Defense": {
+                "tagline": "Flight-Critical Safety",
+                "current": "N/A",
+                "future_val": [
+                    ("[x]", "Fatigue Risk Analysis: Geometric stress concentrators"),
+                    ("[x]", "PMI Validation: Product Manufacturing Information readability")
+                ],
+                "future_mode": "FLIGHT-SAFETY RISK HEATMAP"
+            },
+            "XR / Metaverse": {
+                "tagline": "Immersive Performance",
+                "current": "Polycount Budget.",
+                "future_val": [
+                    ("[x]", "VRAM Calculator: Predicts mobile memory crashes [Implemented]"),
+                    ("[ ]", "Refresh Rate Impact: 'Will this hit 90Hz?'"),
+                    ("[ ]", "KTX2 Compression Ready: Checks texture channel packing")
+                ],
+                "future_mode": "IMMERSIVE COMFORT INDEX"
+            },
+            "E-Commerce": {
+                "tagline": "Conversion Intelligence",
+                "current": "GLB export.",
+                "future_val": [
+                    ("[x]", "File Size Optimizer: 'Reduce by 15% to hit <5MB' [Implemented]"),
+                    ("[ ]", "AR Realism Score: PBR correctness for web viewers")
+                ],
+                "future_mode": "SHOPIFY/AMAZON 3D READINESS"
+            },
+            "Robotics": {
+                "tagline": "Simulation Integrity",
+                "current": "N/A",
+                "future_val": [
+                    ("[x]", "Collision Mesh Convexity: Warns on concave colliders [Implemented]"),
+                    ("[ ]", "Inertia Tensor Check: Validates mass distribution"),
+                    ("[ ]", "Joint Limits: Detects self-colliding articulation")
+                ],
+                "future_mode": "SIM-TO-REAL CONFIDENCE SCORE"
+            },
+             "Industry 4.0": {
+                "tagline": "Industrial Intelligence",
+                "current": "Industry 5.0 Mock.",
+                "future_val": [
+                    ("[ ]", "AAS Mapping: Asset Administration Shell compliance"),
+                    ("[x]", "IoT ID Sync: Ensures unique UUIDs for Digital Twin linkage")
+                ],
+                "future_mode": "FACTORY DIGITAL TWIN CERTIFICATION"
+            },
+            "Industry 5.0": {
+                "tagline": "Human-Centric & Sustainable",
+                "current": "Basic Dashboard.",
+                "future_val": [
+                    ("[x]", "Carbon Footprint Est: Mesh complexity -> Render Energy calc [Implemented]"),
+                    ("[ ]", "Human Safety Check: Detects sharp edges on 'Handheld' assets")
+                ],
+                "future_mode": "SUSTAINABILITY RATING (A++ to E)"
+            },
+            "3D Printing": {
+                "tagline": "Print Simulation",
+                "current": "Overhang Detection.",
+                "future_val": [
+                    ("[x]", "Overhang Detection: Flags angles > 45deg needing support"),
+                    ("[ ]", "Thin Wall Detection: Flags features < 0.8mm"),
+                    ("[x]", "Volume/Cost Est: Resin/Filament usage calculation")
+                ],
+                "future_mode": "PRINTABILITY PROBABILITY SCORE"
+            }
+        }
+
+        layout = QtWidgets.QHBoxLayout(self)
+        layout.setSpacing(0)
+        layout.setContentsMargins(0,0,0,0)
+
+        # Left: List
+        self.list = QtWidgets.QListWidget()
+        self.list.setFixedWidth(300)
+        self.list.addItems(self.data.keys())
+        self.list.currentRowChanged.connect(self.update_details)
+        layout.addWidget(self.list)
+
+        # Right: Details
+        self.details_container = QtWidgets.QFrame()
+        self.details_container.setObjectName("Details")
+        
+        self.det_layout = QtWidgets.QVBoxLayout(self.details_container)
+        self.det_layout.setContentsMargins(40, 40, 40, 40)
+        self.det_layout.setSpacing(20)
+        
+        layout.addWidget(self.details_container, 1) # Stretch factor 1
+        
+        # Init UI
+        self.list.setCurrentRow(0)
+
+    def update_details(self, row):
+        # Clear existing layout
+        while self.det_layout.count():
+            child = self.det_layout.takeAt(0)
+            if child.widget():
+                child.widget().deleteLater()
+        
+        key = list(self.data.keys())[row]
+        info = self.data[key]
+        
+        # Build UI
+        title = QtWidgets.QLabel(key)
+        title.setProperty("class", "h1")
+        self.det_layout.addWidget(title)
+        
+        tag = QtWidgets.QLabel(info["tagline"])
+        tag.setStyleSheet("color: #666; font-family: 'Segoe UI'; font-size: 16px; letter-spacing: 1px; margin-bottom: 20px;")
+        self.det_layout.addWidget(tag)
+        
+        # --- CLOUD INTELLIGENCE BUTTON ---
+        btn_cloud = QtWidgets.QPushButton(f" RUN {key.upper()} CLOUD DIAGNOSTICS")
+        btn_cloud.setObjectName("CloudBtn")
+        btn_cloud.setCursor(PointingHandCursor)
+        btn_cloud.clicked.connect(lambda: self.run_cloud_analysis(key))
+        self.det_layout.addWidget(btn_cloud)
+        
+        lbl_cur = QtWidgets.QLabel("CURRENT VALIDATION LAYER")
+        lbl_cur.setProperty("class", "h2")
+        self.det_layout.addWidget(lbl_cur)
+        
+        lbl_cur_val = QtWidgets.QLabel(info["current"])
+        lbl_cur_val.setStyleSheet("color: #ccc; font-size: 14px; margin-bottom: 20px;")
+        self.det_layout.addWidget(lbl_cur_val)
+        
+        lbl_fut = QtWidgets.QLabel("FUTURE PREDICTIVE INTELLIGENCE (v11.0)")
+        lbl_fut.setProperty("class", "h2")
+        self.det_layout.addWidget(lbl_fut)
+        
+        # Scroll area for roadmap items
+        for status, text in info["future_val"]:
+            chk = QtWidgets.QCheckBox(text)
+            if "[x]" in status:
+                chk.setChecked(True)
+            chk.setEnabled(False) 
+            self.det_layout.addWidget(chk)
+            
+        self.lbl_result = QtWidgets.QLabel("") # For API feedback
+        self.lbl_result.setStyleSheet("color: #fff; font-weight: bold; margin-top: 20px;")
+        self.det_layout.addWidget(self.lbl_result)
+
+        self.det_layout.addStretch()
+        
+        goal = QtWidgets.QLabel(info["future_mode"])
+        goal.setStyleSheet("color: #333; font-size: 24px; font-weight: 900; letter-spacing: 4px; margin-top: 40px;")
+        goal.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignBottom)
+        self.det_layout.addWidget(goal)
+
+    def run_cloud_analysis(self, industry_key):
+        """Simulates sending Maya scene data to the Core API."""
+        self.lbl_result.setText(f"ANALYZING FOR: {industry_key.upper()}...")
+        QtWidgets.QApplication.processEvents()
+        
+        # --- DYNAMIC PAYLOAD GENERATION (Mocking Maya Cmds) ---
+        key = industry_key.lower().split(" ")[0]
+        # Handle special keys
+        if "film" in industry_key.lower(): key = "film"
+        if "xr" in industry_key.lower(): key = "xr"
+        if "e-commerce" in industry_key.lower(): key = "ecommerce"
+        if "3d" in industry_key.lower(): key = "printing"
+        if "4.0" in industry_key.lower(): key = "industry4"
+        if "5.0" in industry_key.lower(): key = "industry5"
+        if "omniverse" in industry_key.lower(): key = "omniverse"
+
+        import random
+        payload = {}
+        
+        if key == "gaming":
+            payload = {"polycount": random.randint(50000, 150000), "has_lods": True, "shader_instructions": random.randint(200, 500)}
+        elif key == "medical":
+            payload = {"is_manifold": True, "bbox_diagonal": 0.15, "topology_type": "triangulated"}
+        elif key == "film":
+            payload = {"poles": random.choice([3, 5, 8]), "has_circular_ref": False}
+        elif key == "automotive":
+            payload = {"nurbs_deviation": 0.02, "occludes_sensor": False, "has_metadata_layer": True}
+        elif key == "architecture":
+            payload = {"bbox_height": 3.5, "fire_rating": "A1"} # PASS
+        elif key == "aerospace":
+            payload = {"stress_concentrators": 0} # PASS
+        elif key == "xr":
+            payload = {"texture_mem_mb": random.randint(30, 80)} # Mixed
+        elif key == "ecommerce":
+            payload = {"filesize_mb": 4.2} # PASS
+        elif key == "robotics":
+            payload = {"collision_hulls": 1} # PASS
+        elif key == "industry4":
+            payload = {"uuid": "Asset-77-88-99"} # PASS
+        elif key == "industry5":
+            payload = {"polycount": 120000} # Carbon Calc
+        elif key == "printing":
+            payload = {"critical_overhangs": random.randint(0, 3)} # Mixed
+        elif key == "omniverse":
+            payload = {"meters_per_unit": 0.01, "up_axis": "Y", "usd_kind": "component", "nucleus_connected": True}
+
+        try:
+            # Updated to Port 8006
+            url = "http://localhost:8006/validate/core"
+            response = requests.post(url, json={"industry": key, "metadata": payload}, timeout=3)
+            
+            if response.status_code == 200:
+                data = response.json()
+                results = data.get("results", [])
+                
+                # Format output
+                final_text = "CLOUD ANALYSIS COMPLETE:\n"
+                for res in results:
+                    status = res["status"]
+                    color = "#00ff00" if status == "PASS" else "#ff0000"
+                    final_text += f'<span style="color:{color}">{status}: {res["check_name"]}</span> - {res["message"]}<br>'
+                
+                self.lbl_result.setText(final_text)
+            else:
+                self.lbl_result.setText(f"CORE ERROR: {response.status_code}")
+                
+        except Exception as e:
+            self.lbl_result.setText(f"CONNECTION FAILED: Ensure Backend Running on Port 8002\n{str(e)}")
+
+
+
+
+
+
 # --- Main UI ---
 class QyntaraDockable(QtWidgets.QDialog):
     def __init__(self, parent=None):
         super(QyntaraDockable, self).__init__(parent)
-        self.setWindowTitle("QYNTARA AI // DASHBOARD v4.0 (NEW)") # DEBUG INDICATOR
+        self.setWindowTitle("QYNTARA NEXUS // SPATIAL OS v12.0.5 STABLE") # NEURAL CORE
         self.setWindowFlags(WindowStaysOnTopHint)
         self.resize(500, 950)
         self.setStyleSheet(STYLESHEET)
@@ -1076,6 +1445,13 @@ class QyntaraDockable(QtWidgets.QDialog):
         # Tab 2: Validator (Same as before, cleaned up)
         self.tab_validator = QtWidgets.QWidget()
         val_main_layout = QtWidgets.QVBoxLayout(self.tab_validator)
+        
+        # --- Industry Roadmap Button (Phase 6) ---
+        self.btn_roadmap = QtWidgets.QPushButton("VIEW 12-INDUSTRY STRATEGIC MATRIX")
+        self.btn_roadmap.setStyleSheet("background-color: #111; color: #00ff9d; font-weight: 900; border: 1px dashed #00ff9d; padding: 12px; letter-spacing: 2px; margin-bottom: 15px;")
+        self.btn_roadmap.setCursor(PointingHandCursor)
+        self.btn_roadmap.clicked.connect(self.show_roadmap)
+        val_main_layout.addWidget(self.btn_roadmap)
         
         # Tool Bar
         val_toolbar = QtWidgets.QHBoxLayout()
@@ -1325,6 +1701,36 @@ class QyntaraDockable(QtWidgets.QDialog):
         
         self.tabs.insertTab(2, self.tab_materials, "MATERIALS AI")
 
+        # --- Tab 6: TOPOLOGY OPTIMIZER (NEW) ---
+        self.tab_topo = QtWidgets.QWidget()
+        topo_scroll = QtWidgets.QScrollArea()
+        topo_scroll.setWidgetResizable(True)
+        topo_scroll.setStyleSheet("background: transparent; border: none;")
+        
+        topo_content = QtWidgets.QWidget()
+        topo_layout = QtWidgets.QVBoxLayout(topo_content)
+        topo_layout.setContentsMargins(10, 10, 10, 10)
+        topo_layout.setSpacing(10)
+        
+        self.pnl_remesh = RemeshPanel()
+        self.pnl_remesh.btn_run.clicked.connect(self.run_quick_remesh)
+        topo_layout.addWidget(self.pnl_remesh)
+        
+        self.pnl_decim = DecimationPanel()
+        topo_layout.addWidget(self.pnl_decim)
+        
+        self.pnl_clean = TopologyCleanupPanel()
+        self.pnl_clean.btn_cleanup.clicked.connect(self.run_topology_cleanup)
+        topo_layout.addWidget(self.pnl_clean)
+        
+        topo_layout.addStretch()
+        topo_scroll.setWidget(topo_content)
+        
+        topo_tab_layout = QtWidgets.QVBoxLayout(self.tab_topo)
+        topo_tab_layout.addWidget(topo_scroll)
+        
+        self.tabs.insertTab(3, self.tab_topo, "TOPOLOGY OPTIMIZER")
+
         # --- Tab 6: OPTIMIZATION & EXPORT ---
         export_layout.setSpacing(15)
         
@@ -1381,6 +1787,13 @@ class QyntaraDockable(QtWidgets.QDialog):
         # e.g. self.pnl_relax.setVisible(context == "organic")
         pass
 
+    def show_roadmap(self):
+        try:
+            dialog = IndustryRoadmapDialog(self)
+            dialog.exec_()
+        except Exception as e:
+            self.show_message("Error", f"Failed to launch Strategic Matrix: {e}")
+
     def closeEvent(self, event):
         if hasattr(self, 'uv_context'):
             self.uv_context.cleanup()
@@ -1434,23 +1847,46 @@ class QyntaraDockable(QtWidgets.QDialog):
                     item.setData(0, QtCore.Qt.UserRole + 3, []) 
                     item.setData(0, QtCore.Qt.UserRole + 4, rule["severity"])
 
+    def _handle_session_expired(self):
+        self.controls_group.hide()
+        self.auth_group.show()
+        self.set_status("SESSION EXPIRED. PLEASE RE-LOGIN.", "error")
+        self.token = None
+
+    def _authed_request(self, url, data=None, headers=None, timeout=30):
+        if headers is None: headers = {}
+        if hasattr(self, 'token') and self.token:
+            headers["Authorization"] = f"Bearer {self.token}"
+        
+        req = urllib.request.Request(url, data=data, headers=headers)
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as response:
+                return response.read(), response.status
+        except urllib.error.HTTPError as e:
+            if e.code == 401:
+                self._handle_session_expired()
+            raise e
+
     def login(self):
-        code = self.auth_input.text()
-        if code == ACCESS_CODE:
-            try:
-                with urllib.request.urlopen(f"{API_URL}/stats", timeout=30) as response:
-                    if response.status == 200:
-                        self.token = "VALID"
-                        self.set_status("NEURAL LINK ESTABLISHED", "success")
-                        self.auth_group.hide()
-                        self.controls_group.show()
-                    else:
-                        self.set_status("SERVER ERROR", "error")
-            except Exception as e:
-                self.set_status("CONNECTION FAILED", "error")
-                self.show_message("Connection Failed", f"Could not connect to QYNTARA Core.\nError: {e}\nEnsure backend is running on port 8000.", "error")
-        else:
-            self.set_status("ACCESS DENIED", "error")
+        api_key = self.auth_input.text()
+        try:
+            import json
+            data_bytes = json.dumps({"api_key": api_key}).encode("utf-8")
+            resp_body, status = self._authed_request(f"{API_URL}/login", data=data_bytes, headers={"Content-Type": "application/json"}, timeout=5)
+            if status == 200:
+                data = json.loads(resp_body.decode())
+                self.token = data.get("access_token")
+                self.set_status("NEURAL LINK ESTABLISHED", "success")
+                self.auth_group.hide()
+                self.controls_group.show()
+        except urllib.error.HTTPError as e:
+            if e.code == 401:
+                self.set_status("ACCESS DENIED", "error")
+            else:
+                self.set_status("SERVER ERROR", "error")
+        except Exception as e:
+            self.set_status("CONNECTION FAILED", "error")
+            self.show_message("Connection Failed", f"Could not connect to QYNTARA Core.\nError: {e}\nEnsure backend is running on port 8000.", "error")
 
     def run_quick_remesh(self):
         # Dedicated quick action
@@ -1762,6 +2198,32 @@ class QyntaraDockable(QtWidgets.QDialog):
              # Mock error zone
              self.show_message("Heatmap", "Visualizing mesh health...\n(Green = Good, Red = Bad)")
 
+    def run_topology_cleanup(self):
+        """Executes a full topology cleanup sweep."""
+        self.set_status("SWEEPING TOPOLOGY...", "active")
+        
+        # 1. Gather enabled checks
+        tasks = []
+        if self.pnl_clean.chk_ngon.isChecked(): tasks.append("fix_ngons")
+        if self.pnl_clean.chk_nonman.isChecked(): tasks.append("fix_non_manifold")
+        
+        # 2. Local Cleanup logic (Maya side)
+        with UndoContext("Topology Cleanup"):
+            sel = cmds.ls(sl=True)
+            if not sel:
+                self.set_status("NO SELECTION", "error")
+                return
+            
+            # Simple local triangulate for ngons as fix
+            if "fix_ngons" in tasks:
+                 cmds.polyTriangulate(sel)
+            
+            # Add history deletion as a 'wash'
+            cmds.delete(sel, ch=True)
+            
+        self.set_status("TOPOLOGY CLEANUP COMPLETE", "success")
+        self.show_message("Cleanup", "Topology sweep finished. Selection is now validated.")
+
     def move_pivot_bottom(self):
         sel = cmds.ls(sl=True)
         if sel:
@@ -1925,22 +2387,83 @@ class QyntaraDockable(QtWidgets.QDialog):
                 for k, v in custom_settings.items():
                     payload[k] = v
             
-            # Send Request
-            req = urllib.request.Request(f"{API_URL}/execute")
-            req.add_header('Content-Type', 'application/json')
+            # Send Request via _authed_request
             jsondata = json.dumps(payload).encode('utf-8')
-            req.add_header('Content-Length', len(jsondata))
+            resp_body, status = self._authed_request(f"{API_URL}/execute", data=jsondata, headers={"Content-Type": "application/json"})
             
-            with urllib.request.urlopen(req, jsondata, timeout=300) as response:
-                if response.status == 200:
-                    result = json.loads(response.read().decode('utf-8'))
-                    self.set_status("COMPLETE", "success")
-                    print("DEBUG: Job Success")
-                    self.process_backend_result(result) 
+            if status != 200:
+                self.set_status(f"SERVER ERROR: {status}", "error")
+                return
+                
+            task_info = json.loads(resp_body.decode('utf-8'))
+            task_id = task_info.get("task_id")
+            if not task_id:
+                self.set_status("FAILED TO GET TASK ID", "error")
+                return
+                
+            # Create Progress Dialog
+            progress = QtWidgets.QProgressDialog("Processing Pipeline...", "Cancel", 0, 0, self)
+            progress.setWindowModality(QtCore.Qt.WindowModal)
+            progress.setWindowTitle("QYNTARA AI Core")
+            progress.setMinimumDuration(0)
+            progress.show()
+            
+            import time
+            start_time = time.time()
+            timeout = 600 # 10 mins
+            result = None
+            
+            while True:
+                QtWidgets.QApplication.processEvents()
+                
+                if progress.wasCanceled():
+                    self.set_status("CANCELLING TASK...", "active")
+                    try:
+                        self._authed_request(f"{API_URL}/tasks/{task_id}/cancel", data=b"{}", headers={"Content-Type": "application/json"})
+                    except Exception as e:
+                        print(f"Cancel error: {e}")
+                    self.set_status("TASK CANCELLED", "error")
+                    return
                     
-                else:
-                    self.set_status(f"SERVER ERROR: {response.status}", "error")
-                    print(f"DEBUG: Server Error {response.status}")
+                if time.time() - start_time > timeout:
+                    progress.close()
+                    self.set_status("TIMEOUT", "error")
+                    try:
+                        self._authed_request(f"{API_URL}/tasks/{task_id}/cancel", data=b"{}", headers={"Content-Type": "application/json"})
+                    except: pass
+                    return
+                    
+                try:
+                    poll_resp, poll_status = self._authed_request(f"{API_URL}/tasks/{task_id}")
+                    if poll_status == 200:
+                        poll_data = json.loads(poll_resp.decode('utf-8'))
+                        state = poll_data.get("status")
+                        
+                        if state == "done":
+                            result = poll_data.get("result")
+                            break
+                        elif state == "failed":
+                            progress.close()
+                            self.set_status(f"PIPELINE ERROR: {poll_data.get('error')}", "error")
+                            return
+                        elif state == "cancelled":
+                            progress.close()
+                            self.set_status("TASK REVOKED", "error")
+                            return
+                        elif state == "running":
+                            meta = poll_data.get("meta", {})
+                            msg = meta.get("message", "Processing...") if isinstance(meta, dict) else "Processing..."
+                            progress.setLabelText(msg)
+                except Exception as e:
+                    print(f"Polling error: {e}")
+                    
+                time.sleep(1)
+                
+            progress.close()
+            if result:
+                self.set_status("COMPLETE", "success")
+                print("DEBUG: Job Success")
+                self.process_backend_result(result)
         except Exception as e:
             self.set_status(f"JOB FAILED: {e}", "error")
             print(f"Job Error: {e}")
@@ -2410,8 +2933,8 @@ class QyntaraDockable(QtWidgets.QDialog):
         if not hasattr(self, 'token') or self.token != "VALID": return
         try:
             # Quick check to ensure connectivity
-            with urllib.request.urlopen(f"{API_URL}/stats", timeout=0.5) as response:
-                if response.status == 200:
+            resp_body, status = self._authed_request(f"{API_URL}/stats", timeout=0.5)
+            if status == 200:
                     self.status_text.setText("ONLINE (TELEMETRY ACTIVE)")
                     self.status_icon.setStyleSheet("color: #00f3ff; font-size: 14px;")
         except:

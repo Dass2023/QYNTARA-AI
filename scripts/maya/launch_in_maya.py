@@ -46,11 +46,24 @@ def launch():
         import qyntara_ai.ui.main_window as qwin
         print(f"[Qyntara] UI Loaded from: {qwin.__file__}")
         
+        # 4. Aggressive Instance Cleanup
+        # Try to find and close existing windows to prevent "no change" ghost instances
+        try:
+            for widget in QtWidgets.QApplication.topLevelWidgets():
+                if widget.objectName() in ["QyntaraMainWindow", "qyntara_nexus_wid"]:
+                    print(f"[Qyntara] Closing existing instance: {widget.objectName()}")
+                    widget.close()
+                    widget.deleteLater()
+        except: pass
+
         # Force reload of style too just in case
         import importlib
         importlib.reload(qwin)
         
-        qwin.show()
+        # Ensure name match for cleanup
+        main_win = qwin.show()
+        main_win.setObjectName("QyntaraMainWindow")
+        
         print("[Qyntara] UI Launched Successfully.")
         
     except Exception as e:

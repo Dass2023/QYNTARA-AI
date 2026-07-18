@@ -390,9 +390,26 @@ class QyntaraPipeline:
                     # Update metrics
                     m = result.metrics
                     final_metrics = RemeshMetrics(
-                        face_count=m.get("quad_count", 0),
+                        poly_count=m.get("triangle_count", 0),
+                        topology_score=m.get("avg_aspect_ratio", 0.0),
+                        quad_count=m.get("quad_count", 0),
+                        triangle_count=m.get("triangle_count", 0),
+                        vertex_count=m.get("vertex_count", 0),
+                        ngon_count=m.get("ngon_count", 0),
+                        avg_aspect_ratio=m.get("avg_aspect_ratio", 0.0),
+                        min_aspect_ratio=m.get("min_aspect_ratio", 0.0),
+                        max_aspect_ratio=m.get("max_aspect_ratio", 0.0),
+                        min_angle_deg=m.get("min_angle_deg", 0.0),
+                        max_angle_deg=m.get("max_angle_deg", 0.0),
+                        avg_angle_deg=m.get("avg_angle_deg", 0.0),
+                        avg_valence=m.get("avg_valence", 0.0),
+                        max_valence=m.get("max_valence", 0),
+                        num_singularities=m.get("num_singularities", 0),
                         symmetry_error=m.get("symmetry_error", 0.0),
-                        singularities=m.get("num_singularities", 0)
+                        volume_preservation_pct=m.get("volume_preservation_pct", 0.0),
+                        surface_area_ratio=m.get("surface_area_ratio", 0.0),
+                        processing_time_ms=m.get("processing_time_ms", 0.0),
+                        original_face_count=m.get("original_face_count", 0)
                     )
                     
                     await self._emit(f"Remeshed {mesh_path} -> {out_name} (faces: {m.get('quad_count')}, time: {m.get('processing_time_ms', 0):.0f}ms)")

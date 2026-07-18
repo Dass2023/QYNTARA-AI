@@ -27,6 +27,7 @@ qtgui = types.ModuleType('PySide2.QtGui')
 class FakeWidget:
     # Constants used by widgets
     Password = 1
+    TicksBelow = 2
     
     def __init__(self, *args, **kwargs): 
         self.text_value = ""

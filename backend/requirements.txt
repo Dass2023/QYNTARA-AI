@@ -2,6 +2,9 @@ fastapi
 uvicorn
 pydantic
 python-multipart
+python-dotenv
+python-jose[cryptography]
+passlib[bcrypt]
 trimesh
 numpy
 scipy
@@ -24,3 +27,6 @@ fast_simplification
 networkx
 scikit-learn
 fuzzywuzzy
+celery[redis]
+redis
+qdrant-client

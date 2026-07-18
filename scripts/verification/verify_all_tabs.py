@@ -69,6 +69,8 @@ class MockWidget(object):
     def setIconSize(self, size): pass
     def setPlaceholderText(self, text): pass
     def setReadOnly(self, ro): pass
+    def setCursor(self, cursor): pass
+    def setProperty(self, name, value): pass
     def resize(self, w, h): pass
     # Common widget methods
     def blockSignals(self, b): pass
@@ -214,7 +216,7 @@ def check_all_tabs():
         print(f"[UI] Total Tabs Loaded: {count}")
         
         expected_tabs = [
-            "INDUSTRY 4.0", "INDUSTRY 5.0", "Validation", "Alignment", 
+            "INDUSTRY 4.0", "INDUSTRY 5.0", "Validation", "Topology Optimizer", "Alignment", 
             "UVs", "Baking", "Export", "Scanner", "Blueprint Studio"
         ]
         all_passed = True
@@ -240,6 +242,18 @@ def check_all_tabs():
              print("  [x] Voice Command Interface ... OK")
         else:
              print("  [ ] Voice Command Interface ... MISSING")
+
+        # Check Phase 31 (Hardening Pass)
+        print("  [FEATURES] Checking Phase 31 Hardening...")
+        if hasattr(window.tab_uv, "chk_viz_layout"):
+             print("    [x] UV Layout Heatmap UI ... OK")
+        else:
+             print("    [ ] UV Layout Heatmap UI ... MISSING")
+
+        if hasattr(window.tab_topo, "combo_agg_mode"):
+             print("    [x] Topology Aggregator Modes ... OK")
+        else:
+             print("    [ ] Topology Aggregator Modes ... MISSING")
 
     except Exception as e:
         print(f"\n[ERROR] Verification Failed: {e}")

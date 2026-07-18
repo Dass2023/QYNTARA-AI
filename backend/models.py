@@ -45,17 +45,54 @@ class ValidationReport(BaseModel):
     uv: UVValidation
     material: MaterialValidation
     topology: TopologyValidation
-    topology: TopologyValidation
     passed: bool = True
 
 class RemeshMetrics(BaseModel):
     poly_count: int = 0
     topology_score: float = 0.0
+    quad_count: int = 0
+    triangle_count: int = 0
+    vertex_count: int = 0
+    ngon_count: int = 0
+    avg_aspect_ratio: float = 0.0
+    min_aspect_ratio: float = 0.0
+    max_aspect_ratio: float = 0.0
+    min_angle_deg: float = 0.0
+    max_angle_deg: float = 0.0
+    avg_angle_deg: float = 0.0
+    avg_valence: float = 0.0
+    max_valence: int = 0
+    num_singularities: int = 0
+    symmetry_error: float = 0.0
+    volume_preservation_pct: float = 0.0
+    surface_area_ratio: float = 0.0
+    processing_time_ms: float = 0.0
+    original_face_count: int = 0
 
 class RemeshOutput(BaseModel):
     status: str = "pending"
     mesh_path: Optional[str] = None
+    method_used: str = "qyntara_quad_v2"
     metrics: Optional[RemeshMetrics] = None
+    issues: List[str] = Field(default_factory=list)
+
+class LODLevelOutput(BaseModel):
+    level: int = 0
+    triangle_count: int = 0
+    vertex_count: int = 0
+    reduction_ratio: float = 1.0
+    file_path: str = ""
+    screen_size: float = 1.0
+    quality_score: float = 1.0
+    error_metric: float = 0.0
+
+class LODChainOutput(BaseModel):
+    status: str = "pending"
+    message: str = ""
+    levels: List[LODLevelOutput] = Field(default_factory=list)
+    total_processing_time_ms: float = 0.0
+    source_triangle_count: int = 0
+    file_paths: List[str] = Field(default_factory=list)
 
 class MaterialProfile(BaseModel):
     clusters: List[Dict[str, Any]] = []
@@ -123,10 +160,12 @@ class QyntaraArtifacts(BaseModel):
     dualUVOutput: Optional[DualUVOutput] = None
     lightmapDiagnostics: Optional[LightmapValidationReport] = None
     remeshOutput: RemeshOutput
+    lodOutput: Optional[LODChainOutput] = None
     materialProfile: MaterialProfile
     generative3DOutput: Generative3DOutput
     exportCompliance: ExportComplianceReport
     optimization_export: Dict[str, Any] = Field(default_factory=dict)
+    textureOutput: Optional[Dict[str, Any]] = None
 
 class PipelineRequest(BaseModel):
     scene: Dict[str, Any] = Field(default_factory=dict)
@@ -135,6 +174,7 @@ class PipelineRequest(BaseModel):
     tasks: List[str] = ["segment", "validate", "uv", "lightmapuv", "remesh", "material", "generative", "export"]
     engineTarget: str = "unity"
     remesh_settings: Dict[str, Any] = Field(default_factory=dict)
+    optimize_settings: Dict[str, Any] = Field(default_factory=dict)
     generative_settings: Dict[str, Any] = Field(default_factory=dict)
     uv_settings: Dict[str, Any] = Field(default_factory=dict)
     material_settings: Dict[str, Any] = Field(default_factory=dict)

@@ -1,8 +1,10 @@
 from bottle import Bottle, run, static_file, request, response
 import json, os, time
 
+import pathlib
 app = Bottle()
-os.makedirs("backend/data/uploads", exist_ok=True)
+_data_dir = pathlib.Path(__file__).parent / "data"
+os.makedirs(_data_dir / "uploads", exist_ok=True)
 
 # CORS Middleware
 @app.hook('after_request')
