@@ -39,6 +39,7 @@ backend/models/*.pt
 # Generated Data
 backend/data/test_gen_out/
 backend/data/trellis_output/
+data/qdrant_storage/
 *.ply
 *.glb
 *.usdz
@@ -50,3 +51,14 @@ backend/data/trellis_output/
 # System
 .DS_Store
 Thumbs.db
+
+.env
+
+*.zip
+
+# Phase 2 Ignore Additions
+*.docx
+~$*
+temp_backup/
+data/
+Redis/

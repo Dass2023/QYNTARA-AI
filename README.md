@@ -51,9 +51,7 @@ pip install -r requirements.txt
 ..\venv_gpu\Scripts\uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-### 2. Frontend (Web Dashboard)
-Dashboard for remote monitoring and asset library.
-```powershell
+powershell
 cd frontend
 npm install
 npm run dev
@@ -103,3 +101,4 @@ Click the **Microphone** icon in the header and speak naturally:
 ---
 
 *Powered by Qyntara Neural Core*
+

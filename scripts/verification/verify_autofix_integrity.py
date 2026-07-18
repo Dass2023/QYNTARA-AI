@@ -2,9 +2,9 @@ import json
 import os
 import re
 
-RULES_PATH = r"e:\QYNTARA AI\qyntara_ai\rules\qyntara_ruleset.json"
-MAIN_WINDOW_PATH = r"e:\QYNTARA AI\qyntara_ai\ui\main_window.py"
-FIXER_PATH = r"e:\QYNTARA AI\qyntara_ai\core\fixer.py"
+RULES_PATH = r"i:\QYNTARA AI\qyntara_ai\rules\qyntara_ruleset.json"
+MAIN_WINDOW_PATH = r"i:\QYNTARA AI\qyntara_ai\ui\main_window.py"
+FIXER_PATH = r"i:\QYNTARA AI\qyntara_ai\core\fixer.py"
 
 def verify():
     print("--- Verifying Qyntara Auto-Fix System ---\n")
@@ -14,14 +14,14 @@ def verify():
         print(f"ERROR: Ruleset not found at {RULES_PATH}")
         return
         
-    with open(RULES_PATH, 'r') as f:
+    with open(RULES_PATH, 'r', encoding='utf-8') as f:
         rules = json.load(f)
         
     print(f"Loaded {len(rules)} rules.")
     
     # 2. Extract Fix Map from UI
     fix_map = {}
-    with open(MAIN_WINDOW_PATH, 'r') as f:
+    with open(MAIN_WINDOW_PATH, 'r', encoding='utf-8') as f:
         content = f.read()
         # Regex to find "rule_id": fixer.QyntaraFixer.method_name
         # OR "rule_id": fixer.QyntaraFixer.method_name,
@@ -33,7 +33,7 @@ def verify():
             
     # 3. Extract Methods from Fixer
     fixer_methods = set()
-    with open(FIXER_PATH, 'r') as f:
+    with open(FIXER_PATH, 'r', encoding='utf-8') as f:
         content = f.read()
         methods = re.findall(r'def\s+([a-zA-Z0-9_]+)\(', content)
         fixer_methods.update(methods)

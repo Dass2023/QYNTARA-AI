@@ -11,6 +11,7 @@ except ImportError:
 # --- Styling Constants ---
 NEON_CYAN = "#00f3ff"
 NEON_PURPLE = "#bc13fe"
+NEON_RED = "#ff3131"
 BG_DARK = "#0a0a0c"
 BG_PANEL = "#111115"
 BORDER_COLOR = "#333"
@@ -116,11 +117,24 @@ class MasterPromptWidget(QtWidgets.QFrame):
 
         # 1. Header (Logo + Status Tiny)
         header_layout = QtWidgets.QHBoxLayout()
-        logo = QtWidgets.QLabel("QYNTARA")
-        logo.setStyleSheet("font-weight: 900; color: #fff; letter-spacing: 3px; font-size: 14px;")
-        ai_tag = QtWidgets.QLabel("AGENT")
-        ai_tag.setStyleSheet(f"color: {NEON_CYAN}; font-weight: 300; font-size: 14px; letter-spacing: 2px;")
         
+        logo = QtWidgets.QLabel()
+        import os
+        logo_path = os.path.join(os.path.dirname(__file__), "..", "qyntara_ai", "ui", "resources", "type_brand.png")
+        if not os.path.exists(logo_path):
+            logo_path = os.path.join(os.path.dirname(__file__), "..", "qyntara_ai", "ui", "resources", "logo_brand_new.png")
+        if not os.path.exists(logo_path):
+            logo_path = os.path.join(os.path.dirname(__file__), "..", "qyntara_ai", "ui", "resources", "QYNTARALogo.png")
+            
+        if os.path.exists(logo_path):
+            pixmap = QtGui.QPixmap(logo_path)
+            # Scale to fit the small header space
+            logo.setPixmap(pixmap.scaledToHeight(30, QtCore.Qt.SmoothTransformation))
+        else:
+            logo.setText("QYNTARA")
+            logo.setStyleSheet("font-weight: 900; color: #fff; letter-spacing: 3px; font-size: 14px;")
+            
+        ai_tag = QtWidgets.QLabel("AGENT")
         self.status_dot = QtWidgets.QLabel("●")
         self.status_dot.setStyleSheet("color: #444; margin-left: 10px;")
         self.status_lbl = QtWidgets.QLabel("IDLE")
