@@ -1,0 +1,3 @@
+@echo off
+echo [INFO] Redirecting to Frontend Launcher...
+call "frontend\start_safe.bat"

@@ -1,0 +1,25 @@
+{
+  "scene_id": "scene_002",
+  "objects": [
+    {
+      "name": "pCube3",
+      "misaligned_name": "pCube3_bad",
+      "offset": [
+        0.022445495762994816,
+        -0.32576109034351974,
+        0.48200303447567816
+      ],
+      "error_type": "gap"
+    },
+    {
+      "name": "pCube4",
+      "misaligned_name": "pCube4_bad",
+      "offset": [
+        0.2811406919074304,
+        0.3888334971363211,
+        -0.0035322811966996825
+      ],
+      "error_type": "gap"
+    }
+  ]
+}

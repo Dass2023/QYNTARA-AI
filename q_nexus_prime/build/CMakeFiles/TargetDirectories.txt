@@ -1,0 +1,8 @@
+I:/QYNTARA AI/q_nexus_prime/build/CMakeFiles/q_nexus_core.dir
+I:/QYNTARA AI/q_nexus_prime/build/CMakeFiles/test_manifold.dir
+I:/QYNTARA AI/q_nexus_prime/build/CMakeFiles/test_remesh.dir
+I:/QYNTARA AI/q_nexus_prime/build/CMakeFiles/test_bake.dir
+I:/QYNTARA AI/q_nexus_prime/build/CMakeFiles/test_industrial.dir
+I:/QYNTARA AI/q_nexus_prime/build/CMakeFiles/RUN_TESTS.dir
+I:/QYNTARA AI/q_nexus_prime/build/CMakeFiles/ALL_BUILD.dir
+I:/QYNTARA AI/q_nexus_prime/build/CMakeFiles/ZERO_CHECK.dir

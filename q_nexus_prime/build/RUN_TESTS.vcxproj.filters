@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="I:\QYNTARA AI\q_nexus_prime\build\CMakeFiles\bc9a7b25a83986586383f02f44f1db21\RUN_TESTS_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{788F5EF3-CDC6-342E-B6CC-07B602748077}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

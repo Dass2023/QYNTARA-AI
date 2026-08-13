@@ -1,0 +1,10 @@
+^I:\QYNTARA AI\Q_NEXUS_PRIME\BUILD\CMAKEFILES\BC9A7B25A83986586383F02F44F1DB21\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" "-SI:/QYNTARA AI/q_nexus_prime" "-BI:/QYNTARA AI/q_nexus_prime/build" --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file "I:/QYNTARA AI/q_nexus_prime/build/QNexusPrime.sln"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

@@ -21,7 +21,7 @@ class GamingValidator(AbstractValidator):
         return "gaming"
 
     def _check_frame_time(self, context):
-        polycount = context.metadata.get("polycount", 0)
+        polycount = context.metadata.get("polycount") or 0
         # Mock AI Inference: 1ms per 50k polys approx on mid-range GPU
         est_ms = (polycount / 50000.0) + 1.2
         if est_ms > 3.0:
@@ -36,20 +36,22 @@ class GamingValidator(AbstractValidator):
 
     def _check_mobile_compliance(self, context):
         # Quest 2 limits
-        if context.metadata.get("polycount", 0) > 100000:
+        polycount = context.metadata.get("polycount") or 0
+        if polycount > 100000:
             return "FAIL", "Exceeds Mobile Polycount Limit (100k).", {}, True
         return "PASS", "Mobile Compliant.", {}, False
 
     # --- Future Checks ---
     def _check_shader_complexity(self, context):
-        # Mock: Analyze instructions.
-        instructions = context.metadata.get("shader_instructions", 120)
+        instructions = context.metadata.get("shader_instructions")
+        if instructions is None:
+            return "PASS", "Shader Complexity within limits (Standard Maya Shading).", {}, False
         if instructions > 300:
              return "WARNING", f"Shader is heavy ({instructions} instr). High Register Pressure risk.", {}, True
         return "PASS", "Shader Complexity within limits.", {}, False
 
     def _check_draw_calls(self, context):
-        dcs = context.metadata.get("drawcalls", 1)
+        dcs = context.metadata.get("drawcalls") or 1
         if dcs > 5:
              return "WARNING", f"Asset generates {dcs} Draw Calls. Target: 1 per mesh.", {}, True
         return "PASS", "Draw Call Budget Optimized.", {}, False

@@ -1,0 +1,38 @@
+{
+  "FileVersion": 3,
+  "Version": 1,
+  "VersionName": "5.0.0",
+  "FriendlyName": "Qyntara Runtime SDK",
+  "Description": "Spatial Intelligence OS for Unreal Engine - Import and process 3D assets from any DCC with AI-powered optimization",
+  "Category": "3D Import",
+  "CreatedBy": "Dass2023",
+  "CreatedByURL": "https://github.com/Dass2023/Qyntara-AI",
+  "DocsURL": "https://qyntara.ai/docs/unreal",
+  "MarketplaceURL": "",
+  "SupportURL": "https://github.com/Dass2023/Qyntara-AI/issues",
+  "EngineVersion": "5.0.0",
+  "CanContainContent": true,
+  "IsBetaVersion": true,
+  "IsExperimentalVersion": false,
+  "Installed": false,
+  "Modules": [
+    {
+      "Name": "QyntaraRuntime",
+      "Type": "Runtime",
+      "LoadingPhase": "Default",
+      "WhitelistPlatforms": [
+        "Win64",
+        "Mac",
+        "Linux",
+        "Android",
+        "IOS"
+      ]
+    }
+  ],
+  "Plugins": [
+    {
+      "Name": "ProceduralMeshComponent",
+      "Enabled": true
+    }
+  ]
+}

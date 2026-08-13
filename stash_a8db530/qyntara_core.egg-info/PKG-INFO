@@ -1,0 +1,345 @@
+Metadata-Version: 2.4
+Name: qyntara-core
+Version: 5.0.0
+Summary: The world's first Spatial Intelligence Operating System - DCC-agnostic 3D asset pipeline infrastructure
+Home-page: https://github.com/Dass2023/Qyntara-AI
+Author: Dass2023
+Author-email: Dass2023 <dass2023@qyntara.ai>
+License: MIT
+Project-URL: Homepage, https://github.com/Dass2023/Qyntara-AI
+Project-URL: Documentation, https://qyntara.ai/docs
+Project-URL: Repository, https://github.com/Dass2023/Qyntara-AI
+Project-URL: Bug Tracker, https://github.com/Dass2023/Qyntara-AI/issues
+Keywords: 3d,spatial-computing,dcc,maya,blender,3dsmax,unity,unreal,gltf,usd
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Topic :: Multimedia :: Graphics :: 3D Modeling
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy>=1.20.0
+Requires-Dist: packaging>=20.0
+Provides-Extra: usd
+Requires-Dist: usd-core>=22.11; extra == "usd"
+Provides-Extra: scipy
+Requires-Dist: scipy>=1.7.0; extra == "scipy"
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+Requires-Dist: pytest-cov>=3.0; extra == "dev"
+Requires-Dist: black>=22.0; extra == "dev"
+Requires-Dist: flake8>=4.0; extra == "dev"
+Requires-Dist: mypy>=0.950; extra == "dev"
+Provides-Extra: all
+Requires-Dist: qyntara-core[dev,scipy,usd]; extra == "all"
+Dynamic: author
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-python
+
+# Qyntara AI - Spatial Intelligence Operating System
+
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Version](https://img.shields.io/badge/version-5.0.0-green.svg)](https://github.com/Dass2023/Qyntara-AI)
+
+> **The world's first Spatial Intelligence Operating System** - A DCC-agnostic 3D asset pipeline infrastructure that removes friction ("Antigravity") between creation tools and deployment environments through AI-native automation.
+
+---
+
+## 🎯 What is Qyntara AI?
+
+Qyntara AI is **not a plugin, not a DCC, not a service** - it's an **infrastructure operating system** for spatial computing.
+
+**The Problem**:
+- Artists create in Maya/3ds Max/Blender
+- TDs manually optimize for 3+ days per asset
+- Different processes for Unity vs Unreal vs Web
+- 80% of time spent on manual optimization, not creative work
+
+**The Solution**:
+- **One universal format** (`QMesh`) works across all DCCs
+- **AI-powered optimization** (material synthesis, mesh reduction, UV unwrapping)
+- **One export, all platforms** (Unity, Unreal, Web, AR/VR)
+- **5-10x faster pipelines**
+
+---
+
+## 🚀 Quick Start
+
+### Installation
+
+```bash
+# Install from source
+git clone https://github.com/Dass2023/Qyntara-AI.git
+cd Qyntara-AI
+pip install -e .
+
+# With optional dependencies
+pip install -e ".[usd,scipy,all]"
+```
+
+### Basic Usage
+
+```python
+from qyntara_core import QMesh, QScene
+from qyntara_core.geometry import MeshProcessor
+from qyntara_core.io import GLTFConverter, USDConverter
+
+# Load mesh from any DCC (Maya example)
+from qyntara_dcc.maya import MayaAdapter
+mesh = MayaAdapter.get_selected_mesh()
+
+# Process with Core Engine
+centered = MeshProcessor.center_mesh(mesh)
+scaled = MeshProcessor.scale_mesh(centered, scale=2.0)
+
+# Validate quality
+issues = MeshProcessor.validate_mesh(scaled)
+if issues:
+    print(f"Found {len(issues)} issues:", issues)
+
+# Export to any format
+scene = QScene(meshes=[scaled])
+GLTFConverter.export(scene, "output.glb", binary=True)  # For web/Unity/Unreal
+USDConverter.export(scene, "output.usdc", binary=True)   # For visionOS/Apple
+```
+
+---
+
+## 📦 Features
+
+### ✅ **v4.6.1 LTS** (Current - Production Stable)
+
+- **OpenUSD Pipeline**: Full USD/USDC/USDA export/import
+- **Universal glTF/GLB I/O**: Optimized for web, game engines, AR/VR
+- **Multi-DCC Support**: Maya (production), 3ds Max & Blender (coming v5.1)
+- **Smart Export System**: One-click export to multiple platforms
+- **Real-Time Validation**: Shader-based topology error detection
+- **Version Control**: Git and Perforce integration
+- **Industry 4.0 IoT**: MQTT/OPC-UA digital twin sync
+
+### 🔜 **v5.0 AI Compute Layer** (Q3 2026)
+
+- **Material Synthesis**: Text/photo → PBR materials (AI)
+- **Neural Mesh Optimization**: Graph Neural Network retopology
+- **Procedural Animation**: Physics-based + reinforcement learning
+- **Cloud AI Processing**: Offload GPU-intensive tasks
+
+### 🔮 **v6.0 Antigravity Intelligence** (Q2 2027)
+
+- **Generative 3D**: Text → 3D model (Point-E, Shap-E)
+- **Anomaly Detection**: Computer vision for topology errors
+- **Voice Control**: Natural language modeling (Whisper + GPT-4)
+- **Autonomous Workflows**: Self-optimizing pipelines
+
+---
+
+## 🏗️ Architecture
+
+Qyntara AI uses a **multi-layer architecture** for stability and innovation:
+
+```
+┌─────────────────────────────────────────┐
+│ Layer 3: Antigravity Intelligence (v6.0)│  Experimental, opt-in
+│ • Generative 3D  • Voice Control        │
+├─────────────────────────────────────────┤
+│ Layer 2: AI Compute Engine (v5.0)       │  Feature-flagged
+│ • Material Synthesis  • Neural Mesh Opt │
+├─────────────────────────────────────────┤
+│ Layer 1: Stable Core (v4.6.1 LTS)       │  Frozen, guaranteed 5+ years
+│ • QMesh  • USD/glTF  • Validation       │
+└─────────────────────────────────────────┘
+          │
+    ┌─────┴─────┐
+┌───▼───┐ ┌─────▼─────┐ ┌────▼────┐
+│ Maya  │ │ Max/Blend │ │ Unity/  │
+│       │ │           │ │ Unreal  │
+└───────┘ └───────────┘ └─────────┘
+```
+
+---
+
+## 📚 Documentation
+
+- **[Complete Strategic Master Plan](./brain/MASTER_STRATEGIC_PLAN.md)** - 24-month roadmap
+- **[Core Engine Walkthrough](./brain/walkthrough_core_engine_v5.md)** - Technical details
+- **[Product Development Plan](./brain/product_development_plan_v1.md)** - Business strategy
+
+### API Reference
+
+#### Universal Data Types
+
+```python
+from qyntara_core import QMesh, QMaterial, QScene
+
+# QMesh - Universal mesh format
+mesh = QMesh(
+    vertices=np.array([[0,0,0], [1,0,0], [0,1,0]], dtype=np.float32),
+    faces=np.array([[0,1,2]], dtype=np.int32),
+    normals=None,  # Auto-computed
+    uvs=[uv_set],  # Multiple UV sets supported
+    name="MyMesh"
+)
+
+# QMaterial - PBR material
+material = QMaterial(
+    name="Gold",
+    base_color=np.array([1.0, 0.766, 0.336], dtype=np.float32),
+    metallic=1.0,
+    roughness=0.1
+)
+
+# QScene - Complete scene graph
+scene = QScene(
+    meshes=[mesh],
+    materials=[material]
+)
+```
+
+#### Geometry Processing
+
+```python
+from qyntara_core.geometry import MeshProcessor
+
+# Validate mesh
+issues = MeshProcessor.validate_mesh(mesh)  # Detects n-gons, flipped normals, etc.
+
+# Transform meshes
+centered = MeshProcessor.center_mesh(mesh)
+scaled = MeshProcessor.scale_mesh(mesh, scale=2.0)
+
+# Clean topology
+merged = MeshProcessor.merge_vertices(mesh, threshold=0.001)
+cleaned = MeshProcessor.remove_duplicate_faces(mesh)
+```
+
+#### Format Converters
+
+```python
+from qyntara_core.io import USDConverter, GLTFConverter
+
+# Export to OpenUSD (visionOS, Apple ecosystem)
+USDConverter.export(scene, "output.usdc", binary=True)
+
+# Export to glTF (web, Unity, Unreal)
+GLTFConverter.export(scene, "output.glb", binary=True)
+
+# Import from any format
+scene = GLTFConverter.import_file("input.glb")
+```
+
+---
+
+## 🧪 Testing
+
+```bash
+# Run all tests
+pytest tests/ -v
+
+# With coverage
+pytest tests/ --cov=qyntara_core --cov-report=html
+
+# Run specific test
+pytest tests/test_core.py::TestQMesh::test_triangulate_quad -v
+```
+
+**Test Coverage**: 90%+ (target: 95%)
+
+---
+
+## 🛣️ Roadmap
+
+| Phase | Timeline | Deliverable |
+|-------|----------|-------------|
+| **Phase 1** | Q1 2026 ✅ | v4.6.1 LTS freeze, Core Engine foundation |
+| **Phase 2** | Q2-Q3 2026 | v5.0 AI Compute (material synthesis, neural opt) |
+| **Phase 3** | Q4 2026 | Multi-DCC (3ds Max, Blender), Unity/Unreal SDKs |
+| **Phase 4** | Q1 2027 | v5.0 GA with enterprise features |
+| **Phase 5** | Q2-Q4 2027 | v6.0 Antigravity Intelligence |
+
+---
+
+## 💼 Business Model
+
+**Open-Core Strategy**:
+
+| Tier | Price | Features |
+|------|-------|----------|
+| **Free** | $0 | Full v4.6.1 LTS, local AI (v5.0), single DCC |
+| **Pro** | $99/mo | Cloud AI acceleration, all DCCs unlocked |
+| **Enterprise** | Custom | On-premise, floating licenses, SSO, SLA |
+
+**Target Revenue** (Month 24): $6.2M ARR
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! 
+
+```bash
+# Setup development environment
+git clone https://github.com/Dass2023/Qyntara-AI.git
+cd Qyntara-AI
+pip install -e ".[dev]"
+
+# Run tests before committing
+pytest tests/ -v
+black qyntara_core/ qyntara_dcc/
+flake8 qyntara_core/ qyntara_dcc/
+```
+
+---
+
+## 📄 License
+
+**Dual License**:
+- **MIT License** for core engine (open-source, free forever)
+- **Commercial License** for cloud AI and enterprise features
+
+See [LICENSE](LICENSE) for details.
+
+---
+
+## 🌟 Why Qyntara AI?
+
+**Competitive Advantages**:
+- ✅ **DCC-Agnostic**: Works in Maya, Max, Blender (competitors are DCC-specific)
+- ✅ **AI-Native**: Neural optimization built-in (competitors are manual)
+- ✅ **Multi-Platform**: One export for Unity, Unreal, Web, AR/VR
+- ✅ **Open-Core**: Community trust + enterprise scalability
+- ✅ **Production-Proven**: Already used in AAA game studios
+
+**Category Leadership**: First Spatial Intelligence Infrastructure platform
+
+---
+
+## 📞 Contact
+
+- **Website**: https://qyntara.ai
+- **GitHub**: https://github.com/Dass2023/Qyntara-AI
+- **Discord**: https://discord.gg/qyntara (coming soon)
+- **Email**: dass2023@qyntara.ai
+
+---
+
+## 🙏 Acknowledgments
+
+Built with:
+- **OpenUSD** (Pixar)
+- **glTF 2.0** (Khronos Group)
+- **Numpy** (NumPy Developers)
+- **Maya API** (Autodesk)
+
+---
+
+**Made with ❤️ by the Qyntara AI team**
+
+*"Removing the gravity from 3D pipelines through spatial intelligence"*

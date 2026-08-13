@@ -2,6 +2,7 @@
 import maya.cmds as cmds
 import maya.api.OpenMaya as om2
 import json
+import os
 
 try:
     from PySide2 import QtWidgets, QtCore, QtGui
@@ -117,14 +118,11 @@ class MasterPromptWidget(QtWidgets.QFrame):
 
         # 1. Header (Logo + Status Tiny)
         header_layout = QtWidgets.QHBoxLayout()
-        
         logo = QtWidgets.QLabel()
-        import os
+        
         logo_path = os.path.join(os.path.dirname(__file__), "..", "qyntara_ai", "ui", "resources", "type_brand.png")
         if not os.path.exists(logo_path):
             logo_path = os.path.join(os.path.dirname(__file__), "..", "qyntara_ai", "ui", "resources", "logo_brand_new.png")
-        if not os.path.exists(logo_path):
-            logo_path = os.path.join(os.path.dirname(__file__), "..", "qyntara_ai", "ui", "resources", "QYNTARALogo.png")
             
         if os.path.exists(logo_path):
             pixmap = QtGui.QPixmap(logo_path)

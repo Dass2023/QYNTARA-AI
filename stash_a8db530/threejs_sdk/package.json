@@ -1,0 +1,62 @@
+{
+    "name": "@qyntara/threejs-sdk",
+    "version": "5.0.0",
+    "description": "Spatial Intelligence OS for Three.js - Import and process 3D assets with AI-powered optimization",
+    "main": "dist/index.js",
+    "module": "dist/index.esm.js",
+    "types": "dist/index.d.ts",
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "rollup -c",
+        "dev": "rollup -c -w",
+        "test": "jest",
+        "lint": "eslint src --ext .ts",
+        "prepublishOnly": "npm run build"
+    },
+    "keywords": [
+        "3d",
+        "threejs",
+        "webgl",
+        "webgpu",
+        "gltf",
+        "usd",
+        "pbr",
+        "mesh",
+        "geometry",
+        "spatial-computing"
+    ],
+    "author": {
+        "name": "Dass2023",
+        "email": "dass2023@qyntara.ai",
+        "url": "https://github.com/Dass2023/Qyntara-AI"
+    },
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Dass2023/Qyntara-AI.git",
+        "directory": "threejs_sdk"
+    },
+    "bugs": {
+        "url": "https://github.com/Dass2023/Qyntara-AI/issues"
+    },
+    "homepage": "https://qyntara.ai/docs/threejs",
+    "peerDependencies": {
+        "three": "^0.150.0"
+    },
+    "devDependencies": {
+        "@types/three": "^0.150.0",
+        "@typescript-eslint/eslint-plugin": "^5.0.0",
+        "@typescript-eslint/parser": "^5.0.0",
+        "eslint": "^8.0.0",
+        "jest": "^29.0.0",
+        "rollup": "^3.0.0",
+        "rollup-plugin-typescript2": "^0.34.0",
+        "typescript": "^5.0.0"
+    },
+    "dependencies": {},
+    "engines": {
+        "node": ">=14.0.0"
+    }
+}
