@@ -1,0 +1,52 @@
+# Virtual Environments
+venv/
+venv_gpu/
+.env
+
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Maya
+.maya/
+maya_debug/
+*.swp
+*.lock
+
+# Build / Temp
+dist/
+dist_production/
+tmp/
+assets/temp/
+
+# Frontend Build Artifacts
+frontend/.next/
+frontend/out/
+frontend/build/
+
+# AI Model Files (Too large for GitHub)
+backend/models/*.pth
+backend/models/*.ckpt
+backend/models/*.pt
+*.safetensors
+
+# Generated Data
+backend/data/test_gen_out/
+backend/data/trellis_output/
+*.ply
+*.glb
+*.usdz
+
+# IDE
+.vscode/
+.idea/
+
+# System
+.DS_Store
+Thumbs.db

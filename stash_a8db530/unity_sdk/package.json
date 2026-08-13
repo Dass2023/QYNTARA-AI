@@ -1,0 +1,33 @@
+{
+    "name": "com.qyntara.runtime",
+    "version": "5.0.0",
+    "displayName": "Qyntara Runtime SDK",
+    "description": "Spatial Intelligence OS for Unity - Import and process 3D assets from any DCC with AI-powered optimization",
+    "unity": "2019.4",
+    "keywords": [
+        "3d",
+        "mesh",
+        "gltf",
+        "usd",
+        "pbr",
+        "dcc",
+        "maya",
+        "blender",
+        "ai"
+    ],
+    "author": {
+        "name": "Dass2023",
+        "email": "dass2023@qyntara.ai",
+        "url": "https://github.com/Dass2023/Qyntara-AI"
+    },
+    "dependencies": {
+        "com.unity.nuget.newtonsoft-json": "3.0.2"
+    },
+    "samples": [
+        {
+            "displayName": "Import GLB Example",
+            "description": "Example scene showing how to import GLB files at runtime",
+            "path": "Samples~/ImportGLBExample"
+        }
+    ]
+}

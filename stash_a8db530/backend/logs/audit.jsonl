@@ -1,0 +1,3 @@
+{"timestamp": "2026-02-15T10:04:03.371721Z", "timestamp_unix": 1771149843.3717265, "tenant_id": "tenant_default", "user_id": "user_123", "role": "user", "action": "EXECUTE_PIPELINE", "resource": "pipeline", "status": "STARTED", "details": {"tasks": ["validate"]}}
+{"timestamp": "2026-02-15T10:04:20.935910Z", "timestamp_unix": 1771149860.9359148, "tenant_id": "tenant_default", "user_id": "user_123", "role": "user", "action": "EXECUTE_PIPELINE", "resource": "pipeline", "status": "STARTED", "details": {"tasks": ["validate"]}}
+{"timestamp": "2026-02-15T10:04:20.936553Z", "timestamp_unix": 1771149860.9365563, "tenant_id": "tenant_default", "user_id": "user_123", "role": "user", "action": "EXECUTE_PIPELINE", "resource": "pipeline", "status": "COMPLETED", "details": {}}

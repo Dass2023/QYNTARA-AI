@@ -1,0 +1,104 @@
+version: '3.8'
+
+services:
+  # 1. Main API Service
+  api:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports: [ "8000:8000" ]
+    volumes: [ ./backend:/app/backend ]
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - PROMETHEUS_MULTIPROC_DIR=/tmp/prometheus_multiproc_dir
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - qyntara-net
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: always
+
+  # 2. Async GPU Worker
+  worker:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    command: celery -A backend.celery_worker.celery_app worker --loglevel=info --concurrency=1
+    volumes: [ ./backend:/app/backend ]
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - NVIDIA_VISIBLE_DEVICES=all
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [ gpu ]
+    depends_on:
+      redis:
+        condition: service_healthy
+      api:
+        condition: service_started
+    networks:
+      - qyntara-net
+    healthcheck:
+      test: [ "CMD-SHELL", "celery -A backend.celery_worker.celery_app inspect ping" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: always
+
+  # 3. Message Broker
+  redis:
+    image: redis:7-alpine
+    ports: [ "6379:6379" ]
+    networks:
+      - qyntara-net
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+
+  # 4. Frontend
+  frontend:
+    build: { context: ./frontend, dockerfile: Dockerfile }
+    ports: [ "3000:3000" ]
+    environment: [ NEXT_PUBLIC_API_URL=http://localhost:8000 ]
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - qyntara-net
+    restart: always
+
+  # 5. Monitoring
+  prometheus:
+    image: prom/prometheus
+    ports: [ "9090:9090" ]
+    volumes:
+      - ./backend/diagnostics/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - qyntara-net
+    restart: always
+
+  grafana:
+    image: grafana/grafana
+    ports: [ "3001:3000" ]
+    depends_on: [ prometheus ]
+    networks:
+      - qyntara-net
+    restart: always
+
+networks:
+  qyntara-net:
+    driver: bridge

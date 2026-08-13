@@ -190,9 +190,28 @@ def cancel_task(task_id: str):
 
 @app.post("/upload", dependencies=[Depends(get_current_user)])
 async def upload_file(file: UploadFile = File(...)):
-    path = f"backend/data/uploads/{file.filename}"
-    with open(path, "wb") as f: shutil.copyfileobj(file.file, f)
-    return {"filename": file.filename, "path": path}
+    import uuid
+    import pathlib
+    import os
+    
+    upload_dir = pathlib.Path("backend/data/uploads").resolve()
+    upload_dir.mkdir(parents=True, exist_ok=True)
+    
+    safe_name = os.path.basename(file.filename)
+    unique_name = f"{uuid.uuid4().hex[:8]}_{safe_name}"
+    
+    final_path = (upload_dir / unique_name).resolve()
+    
+    # Path traversal check
+    if not str(final_path).startswith(str(upload_dir)):
+        raise HTTPException(status_code=400, detail="Invalid filename path traversal detected.")
+        
+    with open(final_path, "wb") as f:
+        shutil.copyfileobj(file.file, f)
+        
+    # Return relative path for client compatibility
+    rel_path = f"backend/data/uploads/{unique_name}"
+    return {"filename": unique_name, "path": rel_path}
 
 agent = QyntaraAgent(pipeline)
 

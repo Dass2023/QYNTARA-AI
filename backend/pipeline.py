@@ -507,8 +507,10 @@ class QyntaraPipeline:
         return self.trellis_gen
 
     async def run_generative_3d(self, prompt: str = "organic", provider: str = "internal", quality: str = "draft") -> Generative3DOutput:
+        import uuid
         await self._emit(f"Generating 3D Assets ({provider}, Quality: {quality})...")
-        gen_path = "backend/data/gen_model.obj"
+        gen_id = str(uuid.uuid4())
+        gen_path = f"backend/data/gen_model_{gen_id}.obj"
         
         if provider == "scenario":
             # ... (Existing Scenario Logic) ...
@@ -531,7 +533,7 @@ class QyntaraPipeline:
                     t2i = self._get_text_to_image_gen()
                     if not t2i: return None
                     
-                    img_path = "backend/data/gen_image.png"
+                    img_path = f"backend/data/gen_image_{gen_id}.png"
                     # Add quality keywords for image gen
                     enhanced_prompt = f"{prompt}, high quality, detailed, 4k, photorealistic, hard surface, 3d render, unreal engine"
                     negative_prompt = "low quality, blurry, pixelated, bad anatomy, deformed, ugly"
@@ -544,7 +546,7 @@ class QyntaraPipeline:
                     if not trellis: return None
                     
                     # Trellis output dir
-                    out_dir = "backend/data/trellis_out"
+                    out_dir = f"backend/data/trellis_out_{gen_id}"
                     result = trellis.generate(generated_img, out_dir)
                     
                     if result and result.get("glb_path"):
@@ -752,8 +754,10 @@ class QyntaraPipeline:
         }
     
     async def run_image_to_3d(self, image_path: str) -> Generative3DOutput:
+        import uuid
         await self._emit("Running Vision-to-3D Reconstruction...")
-        out_path = "backend/data/vision_recon.obj"
+        gen_id = str(uuid.uuid4())
+        out_path = f"backend/data/vision_recon_{gen_id}.obj"
         
         # SAM Preprocessing
         try:

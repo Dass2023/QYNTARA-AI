@@ -1,0 +1,26 @@
+name: Run Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        
+    - name: Install Dependencies
+      run: |
+        pip install --upgrade pip
+        pip install -r qyntara_ai/install/requirements.txt
+        pip install pytest httpx
+        
+    - name: Run Core Tests
+      run: python qyntara_ai/tests/test_core.py
+      
+    - name: Run Server Tests
+      run: python qyntara_ai/tests/test_server.py

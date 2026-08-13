@@ -1,0 +1,792 @@
+[
+    {
+        "id": "geo_open_edges",
+        "label": "Open Edges",
+        "category": "geometry",
+        "severity": "error",
+        "enabled": true,
+        "description": "Detects mesh borders (open edges) which cause lighting leaks.",
+        "function": "check_open_edges",
+        "ai": {
+            "prompt": "Identify and automatically bridge/fill open edges in the mesh using the Auto-Fix feature.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "geo_normals",
+        "label": "Inconsistent / Locked Normals",
+        "category": "geometry",
+        "severity": "error",
+        "enabled": true,
+        "description": "Detects locked (custom) normals or inconsistent face winding.",
+        "function": "check_normals",
+        "ai": {
+            "prompt": "Unlock normals and conform to outward.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "geo_inverted_normals",
+        "label": "Inverted Normals",
+        "category": "geometry",
+        "severity": "error",
+        "enabled": true,
+        "description": "Checks for inverted normals logic (Opposite flag).",
+        "function": "check_inverted_normals",
+        "ai": {
+            "prompt": "Conform normals.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "geo_non_manifold",
+        "label": "Non-Manifold Geometry",
+        "category": "geometry",
+        "severity": "error",
+        "enabled": true,
+        "description": "Detects non-manifold vertices and edges.",
+        "function": "check_non_manifold",
+        "ai": {
+            "prompt": "Cleanup non-manifold geometry.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "geo_lamina_faces",
+        "label": "Lamina Faces",
+        "category": "geometry",
+        "severity": "warning",
+        "enabled": true,
+        "description": "Detects faces sharing all edges (layered faces).",
+        "function": "check_lamina_faces",
+        "ai": {
+            "prompt": "Remove lamina faces.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "geo_ngons",
+        "label": "N-gons Detected",
+        "category": "geometry",
+        "severity": "error",
+        "enabled": true,
+        "description": "Detects faces with more than 4 edges.",
+        "function": "check_ngons",
+        "ai": {
+            "prompt": "Triangulate or Quadrangulate N-gons.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "geo_triangulated",
+        "label": "Not Triangulated",
+        "category": "geometry",
+        "severity": "info",
+        "enabled": true,
+        "description": "Checks if mesh contains non-triangles (Quads/N-gons).",
+        "function": "check_triangulated",
+        "ai": {
+            "prompt": "Triangulate mesh.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "geo_zero_area",
+        "label": "Zero-Area Faces",
+        "category": "geometry",
+        "severity": "error",
+        "enabled": true,
+        "description": "Detects faces with 0 area (breaks shading/lighting).",
+        "function": "check_zero_area_faces",
+        "ai": {
+            "prompt": "Cleanup zero area faces.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "geo_zero_length",
+        "label": "Zero-Length Edges",
+        "category": "geometry",
+        "severity": "error",
+        "enabled": true,
+        "description": "Detects edges with 0 length (bad topology).",
+        "function": "check_zero_length_edges",
+        "ai": {
+            "prompt": "Cleanup zero length edges.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "geo_poles",
+        "label": "Complex Poles",
+        "category": "geometry",
+        "severity": "warning",
+        "enabled": true,
+        "description": "Detects vertices connected to more than 5 edges (E-poles).",
+        "function": "check_poles",
+        "ai": {
+            "prompt": "Retopologize area with poles.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "geo_history",
+        "label": "Non-Deformer History",
+        "category": "geometry",
+        "severity": "error",
+        "enabled": true,
+        "description": "Checks for non-deformer history nodes (e.g. polyExtrude).",
+        "function": "check_construction_history",
+        "ai": {
+            "prompt": "Delete non-deformer history.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "geo_hard_edges",
+        "label": "All Hard Edges",
+        "category": "geometry",
+        "severity": "warning",
+        "enabled": true,
+        "description": "Checks if mesh is 100% faceted (bad for organic).",
+        "function": "check_hard_edges",
+        "ai": {
+            "prompt": "Soften edges.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "geo_missing_bevels",
+        "label": "Missing Bevels / Sharp Edges",
+        "category": "geometry",
+        "severity": "warning",
+        "enabled": true,
+        "description": "Detects sharp geometric edges (>85 deg) that lack bevels, causing baking artifacts.",
+        "function": "check_missing_bevels",
+        "ai": {
+            "prompt": "Bevel sharp edges.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "geo_polycount",
+        "label": "Reasonable Polycount",
+        "category": "geometry",
+        "severity": "warning",
+        "enabled": true,
+        "description": "Checks if mesh face count exceeds recommended limit (e.g. 50k).",
+        "function": "check_polycount",
+        "parameters": {
+            "max": 50000
+        },
+        "ai": {
+            "prompt": "Optimize mesh / Reduce LOD.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "geo_vertex_color",
+        "label": "Missing Vertex Colors",
+        "category": "geometry",
+        "severity": "info",
+        "enabled": true,
+        "description": "Checks if mesh has Vertex Colors (often required for games).",
+        "function": "check_vertex_colors",
+        "ai": {
+            "prompt": "Apply default vertex color.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "geo_floating",
+        "label": "Floating Geometry / Debris",
+        "category": "geometry",
+        "severity": "warning",
+        "enabled": true,
+        "description": "Detects small isolated objects (potential junk).",
+        "function": "check_floating_geometry",
+        "ai": {
+            "prompt": "Delete floating debris.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "geo_internal_faces",
+        "label": "Internal Faces",
+        "category": "geometry",
+        "severity": "error",
+        "enabled": false,
+        "description": "Checks for internal geometry that wastes texture space/polygons.",
+        "function": "check_internal_faces",
+        "ai": {
+            "prompt": "Remove internal faces.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "xform_frozen",
+        "label": "Frozen Transforms",
+        "category": "transform",
+        "severity": "error",
+        "enabled": true,
+        "description": "Ensures Translation/Rotation is 0 and Scale is 1.",
+        "function": "check_frozen_transforms",
+        "ai": {
+            "prompt": "Freeze transformations.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "xform_negative_scale",
+        "label": "Negative Scale",
+        "category": "transform",
+        "severity": "error",
+        "enabled": true,
+        "description": "Checks for negative scale values (causes flipping).",
+        "function": "check_negative_scale",
+        "ai": {
+            "prompt": "Freeze or reset scale.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "xform_scale",
+        "label": "Incorrect Scale",
+        "category": "transform",
+        "severity": "error",
+        "enabled": true,
+        "description": "Checks if object scale is frozen (1,1,1).",
+        "function": "check_scale",
+        "parameters": {
+            "expected": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "tolerance": 0.001
+        },
+        "ai": {
+            "prompt": "Freeze transformations or reset scale to 1.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "check_pivot_center",
+        "label": "Pivot Center",
+        "category": "transform",
+        "severity": "warning",
+        "enabled": true,
+        "description": "Checks if object pivot is at origin (0,0,0) or centered.",
+        "function": "check_pivot_center",
+        "ai": {
+            "prompt": "Center pivot.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "scene_units",
+        "label": "Scene Units",
+        "category": "transform",
+        "severity": "error",
+        "enabled": true,
+        "description": "Verifies scene linear units are correct (e.g. cm).",
+        "function": "check_scene_units",
+        "parameters": {
+            "expected_unit": "cm"
+        },
+        "ai": {
+            "prompt": "Change scene units to cm.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "check_up_axis",
+        "label": "Up Axis",
+        "category": "transform",
+        "severity": "warning",
+        "enabled": true,
+        "description": "Verifies scene up-axis (Y-up vs Z-up).",
+        "function": "check_up_axis",
+        "parameters": {
+            "expected_axis": "y"
+        },
+        "ai": {
+            "prompt": "Change scene up-axis.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "geo_proximity",
+        "label": "Grid Snap / Gaps",
+        "category": "transform",
+        "severity": "info",
+        "enabled": true,
+        "description": "Checks if objects are snapped to grid or have tiny gaps.",
+        "function": "check_proximity_gaps",
+        "ai": {
+            "prompt": "Snap to grid.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "uv_exists",
+        "label": "Valid UV Set",
+        "category": "uv",
+        "severity": "error",
+        "enabled": true,
+        "description": "Ensures object has at least one valid UV set.",
+        "function": "check_uv_exists",
+        "ai": {
+            "prompt": "Unwrap UVs.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "uv_overlap",
+        "label": "UV Overlaps",
+        "category": "uv",
+        "severity": "error",
+        "enabled": true,
+        "description": "Detects overlapping UV shells",
+        "function": "check_uv_overlaps",
+        "ai": {
+            "prompt": "Pack UVs to avoid overlaps.",
+            "model": "cnn_validator"
+        }
+    },
+    {
+        "id": "uv_flipped",
+        "label": "Flipped UV Shells",
+        "category": "uv",
+        "severity": "error",
+        "enabled": true,
+        "description": "Detects inverted or back-facing UV shells.",
+        "function": "check_flipped_uvs",
+        "ai": {
+            "prompt": "Flip UVs.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "uv_bounds",
+        "label": "UV Bounds [0-1]",
+        "category": "uv",
+        "severity": "error",
+        "enabled": true,
+        "description": "Checks if UVs are within standard 0-1 range.",
+        "function": "check_uv_bounds",
+        "ai": {
+            "prompt": "Move UVs into 0-1 space.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "uv_zero_area",
+        "label": "Zero-Area UVs",
+        "category": "uv",
+        "severity": "error",
+        "enabled": true,
+        "description": "Detects UV faces with zero area.",
+        "function": "check_zero_area_uvs",
+        "ai": {
+            "prompt": "Fix UV layout.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "uv_texel_density",
+        "label": "Texel Density",
+        "category": "uv",
+        "severity": "warning",
+        "enabled": true,
+        "description": "Checks for consistent texel density across the mesh.",
+        "function": "check_texel_density",
+        "ai": {
+            "prompt": "Scale UVs to target density.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "mat_default",
+        "label": "Default Material",
+        "category": "materials",
+        "severity": "warning",
+        "enabled": true,
+        "description": "Checks usage of default lambert1.",
+        "function": "check_default_material",
+        "ai": {
+            "prompt": "Assign a new material.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "mat_missing",
+        "label": "Missing Materials",
+        "category": "materials",
+        "severity": "error",
+        "enabled": true,
+        "description": "Ensures every face has a material assigned.",
+        "function": "check_missing_shader",
+        "ai": {
+            "prompt": "Assign default material.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "mat_naming",
+        "label": "Material Naming",
+        "category": "materials",
+        "severity": "warning",
+        "enabled": true,
+        "description": "Ensures materials follow convention (M_).",
+        "function": "check_shader_naming",
+        "ai": {
+            "prompt": "Rename material.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "mat_multi_assigned",
+        "label": "Multi-Material Assignment",
+        "category": "materials",
+        "severity": "warning",
+        "enabled": true,
+        "description": "Checks if mesh has multiple materials assigned.",
+        "function": "check_multi_materials",
+        "ai": {
+            "prompt": "Combine materials.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "mat_complex",
+        "label": "Complex Shader Graph",
+        "category": "materials",
+        "severity": "warning",
+        "enabled": true,
+        "description": "Checks for nodes not supported in basic export (Blend, Ramp).",
+        "function": "check_complex_nodes",
+        "ai": {
+            "prompt": "Bake texture.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "check_naming_convention",
+        "label": "Naming Convention",
+        "category": "naming",
+        "severity": "warning",
+        "enabled": true,
+        "description": "Enforce naming pattern (e.g. CATEGORY_Name_SUF).",
+        "function": "check_naming_convention",
+        "parameters": {
+            "pattern": "^([A-Z]+)_([a-zA-Z0-9]+)_([A-Z]{3})$"
+        },
+        "ai": {
+            "prompt": "Rename objects to match convention.",
+            "model": "llm_renamer"
+        }
+    },
+    {
+        "id": "scene_hierarchy",
+        "label": "Scene Hierarchy",
+        "category": "scene",
+        "severity": "error",
+        "enabled": true,
+        "description": "Checks for single root node / logical grouping.",
+        "function": "check_hierarchy",
+        "ai": {
+            "prompt": "Group under root.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "scene_unused",
+        "label": "Clutter (Cameras/Lights)",
+        "category": "scene",
+        "severity": "warning",
+        "enabled": true,
+        "description": "Checks for unused cameras and lights.",
+        "function": "check_unused_nodes",
+        "ai": {
+            "prompt": "Delete unused nodes.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "geo_intersect",
+        "label": "Mesh Intersection",
+        "category": "geometry",
+        "severity": "warning",
+        "enabled": true,
+        "description": "Detects overlapping/clashing meshes.",
+        "function": "check_coinciding_geometry",
+        "ai": {
+            "prompt": "Separate objects.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "render_terminator",
+        "label": "Shadow Terminator Risk",
+        "category": "baking",
+        "severity": "warning",
+        "enabled": true,
+        "description": "Detects smooth shading on sharp angles (>45 deg).",
+        "function": "check_shadow_terminator",
+        "ai": {
+            "prompt": "Harden edges.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "anim_skin_weights",
+        "label": "Skin Weights",
+        "category": "animation",
+        "severity": "error",
+        "enabled": true,
+        "description": "Checks max influences and normalization.",
+        "function": "check_skin_weights",
+        "ai": {
+            "prompt": "Prune weights.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "anim_baked",
+        "label": "Baked Animation",
+        "category": "animation",
+        "severity": "error",
+        "enabled": true,
+        "description": "Checks if animation is baked to keys.",
+        "function": "check_animation_baked",
+        "ai": {
+            "prompt": "Bake simulation.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "anim_root_motion",
+        "label": "Root Motion",
+        "category": "animation",
+        "severity": "warning",
+        "enabled": true,
+        "description": "Verifies root joint movement.",
+        "function": "check_root_motion",
+        "ai": {
+            "prompt": "Animate root.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "anim_constraints",
+        "label": "Constraints",
+        "category": "animation",
+        "severity": "error",
+        "enabled": true,
+        "description": "Checks for live constraints.",
+        "function": "check_constraints",
+        "ai": {
+            "prompt": "Bake and delete constraints.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "bake_uv2_exists",
+        "label": "Lightmap UVs (UV2)",
+        "category": "baking",
+        "severity": "error",
+        "enabled": true,
+        "description": "Verifies existence of Lightmap UV channel ('Lightmap').",
+        "function": "check_uv2_exists",
+        "ai": {
+            "prompt": "Generate Lightmap Channel.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "bake_uv2_validity",
+        "label": "UV2 Validity (Overlaps/Bounds)",
+        "category": "baking",
+        "severity": "error",
+        "enabled": true,
+        "description": "Checks UV2 for overlaps and 0-1 bounds.",
+        "function": "check_uv2_validity",
+        "ai": {
+            "prompt": "Pack UV2.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "bake_padding",
+        "label": "UV Padding Check",
+        "category": "baking",
+        "severity": "info",
+        "enabled": true,
+        "description": "Checks for sufficient padding between UV shells.",
+        "function": "check_padding",
+        "ai": {
+            "prompt": "Pack UVs with padding.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "bake_seams",
+        "label": "Hard Edge / Seam Alignment",
+        "category": "baking",
+        "severity": "warning",
+        "enabled": true,
+        "description": "Ensures Hard Edges are split in UVs to avoid artifacts.",
+        "function": "check_seams",
+        "ai": {
+            "prompt": "Split UVs at hard edges.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "scene_pollution",
+        "label": "Scene Pollution",
+        "category": "scene",
+        "severity": "error",
+        "enabled": true,
+        "description": "Detects unwanted plugins (Turtle, Bifrost) or nodes.",
+        "function": "check_scene_pollution",
+        "ai": {
+            "prompt": "Clean scene pollution.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "scene_clean_outliner",
+        "label": "Outliner Hygiene",
+        "category": "scene",
+        "severity": "warning",
+        "enabled": true,
+        "description": "Checks for unused Display Layers and Empty Sets.",
+        "function": "check_clean_outliner",
+        "ai": {
+            "prompt": "Delete unused layers/sets.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "name_collision",
+        "label": "Collision Naming (UCX)",
+        "category": "naming",
+        "severity": "error",
+        "enabled": true,
+        "description": "Ensures collision meshes (UCX_) match a render mesh.",
+        "function": "check_collision_naming",
+        "ai": {
+            "prompt": "Rename collision mesh.",
+            "model": "llm_renamer"
+        }
+    },
+    {
+        "id": "geo_concave",
+        "label": "Concave Faces",
+        "category": "geometry",
+        "severity": "warning",
+        "enabled": true,
+        "description": "Detects concave faces which may triangulate badly.",
+        "function": "check_concave_faces",
+        "ai": {
+            "prompt": "Triangulate concave faces.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "game_lod_group",
+        "label": "LOD Group Check",
+        "category": "game",
+        "severity": "warning",
+        "enabled": true,
+        "description": "Checks if LOD groups exist in the scene.",
+        "function": "check_lod_group",
+        "ai": {
+            "prompt": "Create LOD group.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "game_mat_limit",
+        "label": "Max Materials",
+        "category": "game",
+        "severity": "warning",
+        "enabled": true,
+        "description": "Checks if mesh has > 2 materials.",
+        "function": "check_material_usage_limit",
+        "ai": {
+            "prompt": "Combine materials.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "mobile_texture_size",
+        "label": "Texture Size / POT",
+        "category": "mobile",
+        "severity": "error",
+        "enabled": true,
+        "description": "Checks for textures > 2048px or Non-Power-Of-Two.",
+        "function": "check_texture_size",
+        "ai": {
+            "prompt": "Resize texture.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "web_joint_limit",
+        "label": "Joint Limit (64)",
+        "category": "web",
+        "severity": "error",
+        "enabled": true,
+        "description": "Checks if skin exceeds 64 joints (WebGL limit).",
+        "function": "check_max_joints",
+        "ai": {
+            "prompt": "Reduce influences.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "vfx_strict_quads",
+        "label": "Strict Quads",
+        "category": "vfx",
+        "severity": "error",
+        "enabled": false,
+        "description": "Enforces 100% Quads (No Tris/N-gons).",
+        "function": "check_strict_quads",
+        "ai": {
+            "prompt": "Quadrangulate.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "vfx_udims",
+        "label": "UDIM Detection",
+        "category": "vfx",
+        "severity": "info",
+        "enabled": true,
+        "description": "Detects usage of UDIM tiles.",
+        "function": "check_udim_tiles",
+        "ai": {
+            "prompt": "Inspect UDIMs.",
+            "model": "heuristic"
+        }
+    },
+    {
+        "id": "scan_outliers",
+        "label": "LiDAR Spikes / Outliers",
+        "category": "lidar",
+        "severity": "error",
+        "enabled": true,
+        "description": "Detects vertices with abnormally long connected edges (Spikes).",
+        "function": "check_scan_outliers",
+        "parameters": {
+            "threshold_multiplier": 10.0
+        },
+        "ai": {
+            "prompt": "Smooth or delete spikes.",
+            "model": "heuristic"
+        }
+    }
+]
